@@ -1,17 +1,16 @@
-setup:
-	python3 -m venv ~/.udacity-devops
-
 install:
-	pip install --upgrade pip &&\
-		pip install -r requirements.txt
+	python3 -m pip install --upgrade pip &&\
+		pip install -r requirements.txt &&\
+		python3 -m pip install pyinotify pytest virtualenv locust &&\
+		virtualenv ~/.mypy3env &&\
+		source ~/.mypy3env/bin/activate &&\
+		which python3
 
 test:
-	#python -m pytest -vv --cov=myrepolib tests/*.py
-	#python -m pytest --nbval notebook.ipynb
-
+	python3 -m pytest -vv --cov=myrepolib tests/*.py &&\
+	python3 -m pytest --nbval notebook.ipynb
 
 lint:
-	#hadolint Dockerfile #uncomment to explore linting Dockerfiles
-	pylint --disable=R,C,W1203 app.py
+	python3 -m pylint --disable=R,C app.py
 
 all: install lint test
