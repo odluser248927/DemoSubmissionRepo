@@ -1,6 +1,69 @@
-- uses: Azure/pipelines@v1
-  with:
-    azure-devops-project-url: 'https://dev.azure.com/odluser249169/DevOpsDemoProject'
-    azure-pipeline-name: 'pipeline-name' # 
-    azure-devops-token: '${{kxsxfoppulypcalut3ukr44bsql7y7ppjxwa7gx3s6c5k2i2dfvq}}'
-    azure-pipeline-variables:  '{"variable1": "value1", "variable2": "value2"}' # optional stringified json
+trigger:
+- main
+
+pool: myAgentPool
+
+variables:
+  # Azure Resource Manager connection created during pipeline creation
+  azureServiceConnectionId: 'myServiceConnection'
+  
+  # Web app name
+  webAppName: 'mywebapp249169'
+
+  # Environment name
+  environmentName: 'mydevopsvm'
+
+  # Project root folder. Point to the folder containing manage.py file.
+  projectRoot: $(System.DefaultWorkingDirectory)
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    pool: myAgentPool
+    steps:    
+    - script: |
+        python3.7 -m pip install --upgrade pip
+        python3.7 -m pip install setup
+        python3.7 -m pip install -r requirements.txt
+      workingDirectory: $(projectRoot)
+
+    - script: |
+        export PATH=$HOME/.local/bin:$PATH
+        make install
+        make lint
+      workingDirectory: $(projectRoot)
+      displayName: 'Run lint tests'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive files'
+      inputs:
+        rootFolderOrFile: '$(projectRoot)'
+        includeRootFolder: false
+        archiveType: zip
+        archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+        replaceExistingArchive: true
+
+    - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+      displayName: 'Upload package'
+      artifact: drop
+
+- stage: Deploy
+  displayName: 'Deploy Web App'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeploymentJob
+    pool: myAgentPool
+    environment: $(environmentName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureWebApp@1
+            displayName: 'Deploy Azure Web App : flask-ml-service'
+            inputs:
+              azureSubscription: $(azureServiceConnectionId)
+              appName: $(webAppName)
+              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip
