@@ -6,7 +6,7 @@ variables:
   azureServiceConnectionId: 'myServiceConnection'
 
   # Web app name
-  webAppName: 'mywebapp249169'
+  webAppName: 'mywebapp249570'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -28,8 +28,8 @@ stages:
     pool: myAgentPool
     steps:
     - script: |
-        python -m venv antenv
-        source antenv/bin/activate
+        python -m venv venv
+        source venv/bin/activate
         python -m pip install --upgrade pip
         pip install setup
         pip install -r requirements.txt
