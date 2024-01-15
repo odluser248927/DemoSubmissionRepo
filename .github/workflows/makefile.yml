@@ -8,7 +8,7 @@ variables:
   azureServiceConnectionId: 'myServiceConnection'
   
   # Web app name
-  webAppName: 'mywebapp249169'
+  webAppName: 'mywebapp249482'
 
   # Environment name
   environmentName: 'mydevopsvm'
@@ -24,9 +24,9 @@ stages:
     pool: myAgentPool
     steps:    
     - script: |
-        python3.7 -m pip install --upgrade pip
-        python3.7 -m pip install setup
-        python3.7 -m pip install -r requirements.txt
+        python3.9 -m pip install --upgrade pip
+        python3.9 -m pip install setup
+        python3.9 -m pip install -r requirements.txt
       workingDirectory: $(projectRoot)
 
     - script: |
@@ -62,7 +62,7 @@ stages:
         deploy:
           steps:
           - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : flask-ml-service'
+            displayName: 'Deploy Azure Web App : mywebapp249482'
             inputs:
               azureSubscription: $(azureServiceConnectionId)
               appName: $(webAppName)
