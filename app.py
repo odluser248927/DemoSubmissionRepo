@@ -29,9 +29,9 @@ def predict():
     # Performs an sklearn prediction
     try:
         # Load pretrained model as clf. Try any one model. 
-        # clf = joblib.load("~/Housing_price_model/LinearRegression.joblib")
-        # clf = joblib.load("~/Housing_price_model/StochasticGradientDescent.joblib")
-        clf = joblib.load("~/Housing_price_model/GradientBoostingRegressor.joblib")
+        # clf = joblib.load("/Housing_price_model/LinearRegression.joblib")
+        # clf = joblib.load("/Housing_price_model/StochasticGradientDescent.joblib")
+        clf = joblib.load("home/odl_user/myDevOpsDemoMain/myAzureDevOps/DemoSubmissionRepo/Housing_price_model/GradientBoostingRegressor.joblib")
     except:
         LOG.info("JSON payload: %s json_payload")
         return "Model not loaded"
@@ -45,4 +45,4 @@ def predict():
     return jsonify({'prediction': prediction})
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

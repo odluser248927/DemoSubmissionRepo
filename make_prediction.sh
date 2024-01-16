@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-PORT=5000
+PORT=3000
 echo "Port: $PORT"
 
 # POST method predict
-curl -d '{  
+wget -d '{  
    "CHAS":{  
       "0":0
    },
